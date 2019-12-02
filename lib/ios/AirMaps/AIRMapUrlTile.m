@@ -49,12 +49,10 @@
   }
 }
 
-- (void)setLayerOpacity:(CGFloat)opacity
+- (void)setLayerOpacity:(double)opacity
 {
   _opacity = opacity;
-  if (self.opacity) {
-    self.opacity = _opacity;
-  }
+  self.opacity = _opacity;
 }
 
 - (void)setUrlTemplate:(NSString *)urlTemplate{
