@@ -53,6 +53,7 @@
 {
   _opacity = opacity;
   self.opacity = _opacity;
+  [self update];
 }
 
 - (void)setUrlTemplate:(NSString *)urlTemplate{
