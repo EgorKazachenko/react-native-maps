@@ -49,6 +49,14 @@
   }
 }
 
+- (void)setLayerOpacity:(CGFloat)opacity
+{
+  _opacity = opacity;
+  if (self.opacity) {
+    self.opacity = _opacity;
+  }
+}
+
 - (void)setUrlTemplate:(NSString *)urlTemplate{
     _urlTemplate = urlTemplate;
     _urlTemplateSet = YES;
@@ -62,6 +70,8 @@
     [self createTileOverlayAndRendererIfPossible];
     [self update];
 }
+
+
 
 - (void) createTileOverlayAndRendererIfPossible
 {
@@ -83,6 +93,9 @@
         self.tileOverlay.tileSize = CGSizeMake(self.tileSize, self.tileSize);
     }
     self.renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
+    if (self.opacity) {
+      self.renderer.alpha = self.opacity;
+    }
 }
 
 - (void) update
