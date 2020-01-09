@@ -12,6 +12,7 @@
 @implementation AIRMapUrlTile {
     BOOL _urlTemplateSet;
     BOOL _tileSizeSet;
+    BOOL _opacitySet;
 }
 
 - (void)setShouldReplaceMapContent:(BOOL)shouldReplaceMapContent
@@ -49,11 +50,12 @@
   }
 }
 
-- (void)setLayerOpacity:(double)opacity
+- (void)setAlpha:(double)alpha
 {
-  _opacity = opacity;
-  self.opacity = _opacity;
-  [self update];
+  _alpha = alpha;
+  if (self.renderer) {
+    self.renderer.alpha = _alpha;
+  }
 }
 
 - (void)setUrlTemplate:(NSString *)urlTemplate{
@@ -92,8 +94,8 @@
         self.tileOverlay.tileSize = CGSizeMake(self.tileSize, self.tileSize);
     }
     self.renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
-    if (self.opacity) {
-      self.renderer.alpha = self.opacity;
+    if (self.alpha) {
+      self.renderer.alpha = self.alpha;
     }
 }
 
