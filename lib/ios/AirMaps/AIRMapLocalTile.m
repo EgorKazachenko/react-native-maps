@@ -13,14 +13,20 @@
 @implementation AIRMapLocalTile {
     BOOL _pathTemplateSet;
     BOOL _tileSizeSet;
+    BOOL _isBlocked;
 }
-
 
 - (void)setPathTemplate:(NSString *)pathTemplate{
     _pathTemplate = pathTemplate;
     _pathTemplateSet = YES;
     [self createTileOverlayAndRendererIfPossible];
     [self update];
+}
+
+- (void)setOpacity:(CGFloat)opacity {
+    if (!_renderer) return;
+
+    self.renderer.alpha = opacity;
 }
 
 - (void)setTileSize:(CGFloat)tileSize{
@@ -34,7 +40,7 @@
 {
     if (!_pathTemplateSet || !_tileSizeSet) return;
     self.tileOverlay = [[AIRMapLocalTileOverlay alloc] initWithURLTemplate:self.pathTemplate];
-    self.tileOverlay.canReplaceMapContent = YES;
+    self.tileOverlay.canReplaceMapContent = NO;
     self.tileOverlay.tileSize = CGSizeMake(_tileSize, _tileSize);
     self.renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
 }
@@ -44,6 +50,7 @@
     if (!_renderer) return;
     
     if (_map == nil) return;
+    
     [_map removeOverlay:self];
     [_map addOverlay:self level:MKOverlayLevelAboveLabels];
 }
@@ -63,6 +70,14 @@
 - (BOOL)canReplaceMapContent
 {
     return self.tileOverlay.canReplaceMapContent;
+}
+
+- (void)forceUpdate {
+    [self.renderer reloadData];
+}
+
+- (void)block:(BOOL)isBlocked {
+    _isBlocked = YES;
 }
 
 @end
