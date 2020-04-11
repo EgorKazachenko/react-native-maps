@@ -14,6 +14,7 @@
     BOOL _pathTemplateSet;
     BOOL _tileSizeSet;
     BOOL _isBlocked;
+    double _transparency;
 }
 
 - (void)setPathTemplate:(NSString *)pathTemplate{
@@ -23,10 +24,11 @@
     [self update];
 }
 
-- (void)setOpacity:(CGFloat)opacity {
-    if (!_renderer) return;
-
-    self.renderer.alpha = opacity;
+- (void)setTransparency:(double)transparency {
+    _transparency = transparency;
+    if (_renderer) {
+        self.renderer.alpha = transparency;
+    }
 }
 
 - (void)setTileSize:(CGFloat)tileSize{
@@ -43,6 +45,9 @@
     self.tileOverlay.canReplaceMapContent = NO;
     self.tileOverlay.tileSize = CGSizeMake(_tileSize, _tileSize);
     self.renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
+    if (self.transparency) {
+      self.renderer.alpha = self.transparency;
+    }
 }
 
 - (void) update
@@ -53,6 +58,12 @@
     
     [_map removeOverlay:self];
     [_map addOverlay:self level:MKOverlayLevelAboveLabels];
+}
+
+- (void)reloadData {
+    if (!_renderer) return;
+
+    [self.renderer reloadData];
 }
 
 #pragma mark MKOverlay implementation
@@ -70,14 +81,6 @@
 - (BOOL)canReplaceMapContent
 {
     return self.tileOverlay.canReplaceMapContent;
-}
-
-- (void)forceUpdate {
-    [self.renderer reloadData];
-}
-
-- (void)block:(BOOL)isBlocked {
-    _isBlocked = YES;
 }
 
 @end

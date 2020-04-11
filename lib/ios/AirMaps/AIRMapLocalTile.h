@@ -28,7 +28,9 @@
 
 @property (nonatomic, copy) NSString *pathTemplate;
 @property (nonatomic, assign) CGFloat tileSize;
-@property (nonatomic, assign) CGFloat opacity;
+@property double transparency;
+
+- (void)reloadData;
 
 #pragma mark MKOverlay protocol
 
@@ -36,7 +38,5 @@
 @property(nonatomic, readonly) MKMapRect boundingMapRect;
 //- (BOOL)intersectsMapRect:(MKMapRect)mapRect;
 - (BOOL)canReplaceMapContent;
-- (void)block:(BOOL)isBlocked;
-- (void)forceUpdate;
 
 @end
