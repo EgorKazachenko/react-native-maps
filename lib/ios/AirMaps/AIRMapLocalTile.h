@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import <UIKit/UIKit.h>
 #import "AIRMapLocalTileOverlay.h"
+#import "AIRMapLocalTileOverlayRenderer.h"
 
 #import <React/RCTComponent.h>
 #import <React/RCTView.h>
@@ -25,7 +26,7 @@
 @property (nonatomic, weak) RCTBridge *bridge;
 
 @property (nonatomic, strong) AIRMapLocalTileOverlay *tileOverlay;
-@property (nonatomic, strong) MKTileOverlayRenderer *renderer;
+@property (nonatomic, strong) AIRMapLocalTileOverlayRenderer *renderer;
 
 @property (nonatomic, copy) NSString *pathTemplate;
 @property (nonatomic, assign) CGFloat tileSize;

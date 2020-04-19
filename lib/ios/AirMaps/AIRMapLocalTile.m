@@ -9,12 +9,13 @@
 #import "AIRMapLocalTile.h"
 #import <React/UIView+React.h>
 #import "AIRMapLocalTileOverlay.h"
-#import "Egor.h"
+#import "AIRMapLocalTileOverlayRenderer.h"
 
 @implementation AIRMapLocalTile {
     BOOL _pathTemplateSet;
     BOOL _tileSizeSet;
     BOOL _isBlocked;
+    BOOL _transparencySet;
     double _transparency;
 }
 
@@ -41,48 +42,28 @@
 
 - (void) createTileOverlayAndRendererIfPossible
 {
-   
+    
+    if (!_pathTemplateSet || !_tileSizeSet) return;
+
     if (![_map.overlays containsObject:self]) {
-        NSLog(@"----------------ADD OVERLAY----------------------");
-        
-        if (!_pathTemplateSet || !_tileSizeSet) return;
-        
         self.tileOverlay = [[AIRMapLocalTileOverlay alloc] initWithURLTemplate:self.pathTemplate];
-        self.tileOverlay.customPath = self.pathTemplate;
         self.tileOverlay.canReplaceMapContent = NO;
-        self.tileOverlay.tileSize = CGSizeMake(_tileSize, _tileSize);
-        self.renderer = [[MKTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
+//        self.tileOverlay.tileSize = CGSizeMake(_tileSize, _tileSize);
+        self.renderer = [[AIRMapLocalTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
+        self.renderer.customPath = _pathTemplate;
         if (self.transparency) {
             self.renderer.alpha = self.transparency;
         }
-        
-        [_map addOverlay:self level:MKOverlayLevelAboveLabels];
     } else {
-        NSLog(@"----------------OVERLAY EXISTS---------------");
-        
-        [self.tileOverlay setCustomPath:self.pathTemplate];
-        [self.renderer reloadData];
-        
+//        [_map removeOverlay:self];
+//        [_map addOverlay:self level:MKOverlayLevelAboveLabels];
+//        self.tileOverlay.customPath = self.pathTemplate;
+        self.renderer.customPath = _pathTemplate;
+//        [self.renderer setNeedsDisplayInMapRect:MKMapRectWorld];
     }
+
 }
 
-- (void) update
-{
-    if (!_renderer) return;
-    
-    if (_map == nil) return;
-    
-    NSLog(@"----------------RELOAD DATA--%@----------------------", self.pathTemplate);
-
-    // [self.renderer reloadData];
-    [self.renderer setNeedsDisplay];
-}
-
-- (void)reloadData {
-    if (!_renderer) return;
-
-    [self.renderer reloadData];
-}
 
 #pragma mark MKOverlay implementation
 

@@ -39,17 +39,4 @@ RCT_EXPORT_VIEW_PROPERTY(tileSize, CGFloat)
 RCT_EXPORT_VIEW_PROPERTY(transparency, double)
 
 
-RCT_EXPORT_METHOD(reloadData:(nonnull NSNumber *)reactTag)
-{
-    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
-        id view = viewRegistry[reactTag];
-        if (![view isKindOfClass:[AIRMapLocalTile class]]) {
-            RCTLogError(@"Invalid view returned from registry, expecting AIRMap, got: %@", view);
-        } else {
-            [(AIRMapLocalTile *) view reloadData];
-        }
-    }];
-}
-
-
 @end

@@ -9,8 +9,4 @@
 
 @interface AIRMapLocalTileOverlay : MKTileOverlay
 
-@property (nonatomic, copy) NSString* customPath;
-
--(void)setCustomPath:(NSString *)customPath;
-
 @end
