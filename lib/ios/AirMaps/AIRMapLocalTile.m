@@ -59,7 +59,7 @@
 //        [_map addOverlay:self level:MKOverlayLevelAboveLabels];
 //        self.tileOverlay.customPath = self.pathTemplate;
         self.renderer.customPath = _pathTemplate;
-//        [self.renderer setNeedsDisplayInMapRect:MKMapRectWorld];
+       [self.renderer setNeedsDisplayInMapRect:MKMapRectWorld];
     }
 
 }
