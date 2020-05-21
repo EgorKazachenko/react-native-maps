@@ -13,17 +13,26 @@
 
 @implementation AIRMapLocalTile {
     BOOL _pathTemplateSet;
-    BOOL _tileSizeSet;
-    BOOL _isBlocked;
-    BOOL _transparencySet;
     double _transparency;
 }
 
 - (void)setPathTemplate:(NSString *)pathTemplate{
     _pathTemplate = pathTemplate;
     _pathTemplateSet = YES;
-    [self createTileOverlayAndRendererIfPossible];
-    // [self update];
+    
+    if ([_map.overlays containsObject:self]) {
+        self.renderer.customPath = _pathTemplate;
+         
+        [self.renderer setNeedsDisplay];
+    } else {
+        [self createTileOverlayAndRendererIfPossible];
+    }
+}
+
+-(void)setActive:(BOOL)active {
+    if (active && self.renderer) {        
+        [self.renderer setNeedsDisplay];
+    }
 }
 
 - (void)setTransparency:(double)transparency {
@@ -33,35 +42,17 @@
     }
 }
 
-- (void)setTileSize:(CGFloat)tileSize{
-    _tileSize = tileSize;
-    _tileSizeSet = YES;
-    [self createTileOverlayAndRendererIfPossible];
-    // [self update];
-}
-
 - (void) createTileOverlayAndRendererIfPossible
 {
+    self.tileOverlay = [[AIRMapLocalTileOverlay alloc] initWithURLTemplate:self.pathTemplate];
+    self.tileOverlay.canReplaceMapContent = NO;
+    self.tileOverlay.tileSize = CGSizeMake(512.0f, 512.0f);
+    self.renderer = [[AIRMapLocalTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
+    self.renderer.customPath = _pathTemplate;
     
-    if (!_pathTemplateSet || !_tileSizeSet) return;
-
-    if (![_map.overlays containsObject:self]) {
-        self.tileOverlay = [[AIRMapLocalTileOverlay alloc] initWithURLTemplate:self.pathTemplate];
-        self.tileOverlay.canReplaceMapContent = NO;
-//        self.tileOverlay.tileSize = CGSizeMake(_tileSize, _tileSize);
-        self.renderer = [[AIRMapLocalTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
-        self.renderer.customPath = _pathTemplate;
-        if (self.transparency) {
-            self.renderer.alpha = self.transparency;
-        }
-    } else {
-//        [_map removeOverlay:self];
-//        [_map addOverlay:self level:MKOverlayLevelAboveLabels];
-//        self.tileOverlay.customPath = self.pathTemplate;
-        self.renderer.customPath = _pathTemplate;
-       [self.renderer setNeedsDisplayInMapRect:MKMapRectWorld];
+    if (self.transparency) {
+        self.renderer.alpha = self.transparency;
     }
-
 }
 
 

@@ -29,10 +29,8 @@
 @property (nonatomic, strong) AIRMapLocalTileOverlayRenderer *renderer;
 
 @property (nonatomic, copy) NSString *pathTemplate;
-@property (nonatomic, assign) CGFloat tileSize;
+@property (nonatomic, assign) BOOL active;
 @property double transparency;
-
-- (void)reloadData;
 
 #pragma mark MKOverlay protocol
 
