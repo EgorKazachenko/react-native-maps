@@ -140,51 +140,54 @@
 
 - (void) drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     
-    MKTileOverlayPath mapPath = [self pathForMapRect:mapRect zoomScale:zoomScale];
-    MKTileOverlayPath imagePath = [self imagePath:mapPath];
+        MKTileOverlayPath mapPath = [self pathForMapRect:mapRect zoomScale:zoomScale];
     
-    NSString *imageURL = [self stringForTilePath:imagePath];
-    
-    NSData* imageData = [NSData dataWithContentsOfFile:imageURL];
+        MKTileOverlayPath imagePath = [self imagePath:mapPath];
+        
+        NSString *imageURL = [self stringForTilePath:imagePath];
+        
+        NSData* imageData = [NSData dataWithContentsOfFile:imageURL];
 
-    UIImage* image = [UIImage imageWithData:imageData];
+        UIImage* image = [UIImage imageWithData:imageData];
 
-    CGRect theRect = [self rectForMapRect:mapRect];
-    
-    UIGraphicsBeginImageContext(image.size);
+        CGRect theRect = [self rectForMapRect:mapRect];
+        
+        UIGraphicsBeginImageContext(image.size);
 
-    CGContextRef ctx=(UIGraphicsGetCurrentContext());
-    
-    CGContextRotateCTM (ctx, M_PI);
-    CGContextScaleCTM(ctx, -1.0, 1.0);
-    CGContextTranslateCTM(ctx, 0.0, -image.size.height);
+        CGContextRef ctx=(UIGraphicsGetCurrentContext());
+        
+        CGContextRotateCTM (ctx, M_PI);
+        CGContextScaleCTM(ctx, -1.0, 1.0);
+        CGContextTranslateCTM(ctx, 0.0, -image.size.height);
 
-    [image drawAtPoint:CGPointMake(0, 0)];
+        [image drawAtPoint:CGPointMake(0, 0)];
 
-    UIImage *img=UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    CGImageRef ref = img.CGImage;
-    
-    if (mapPath.x % 2 == 0 && mapPath.y % 2 == 1) {
-        CGRect rect = CGRectMake(0, 0, img.size.width / 2, img.size.height / 2);
-        ref = CGImageCreateWithImageInRect(img.CGImage, rect);
-    } else
-    if (mapPath.x % 2 == 0 && mapPath.y % 2 == 0) {
-        CGRect rect = CGRectMake(0, img.size.height / 2 + 1, img.size.width / 2, img.size.height / 2);
-        ref = CGImageCreateWithImageInRect(img.CGImage, rect);
-    } else
-    if (mapPath.x % 2 == 1 && mapPath.y % 2 == 1) {
-        CGRect rect = CGRectMake(img.size.width / 2 + 1, 0, img.size.width / 2, img.size.height / 2);
-        ref = CGImageCreateWithImageInRect(img.CGImage, rect);
-    } else
-    if (mapPath.x % 2 == 1 && mapPath.y % 2 == 0) {
-        CGRect rect = CGRectMake(img.size.width / 2 + 1, img.size.height / 2 + 1, img.size.width / 2, img.size.height / 2);
-        ref = CGImageCreateWithImageInRect(img.CGImage, rect);
-    }
-    
-    CGContextAddRect(context, theRect);
-    CGContextDrawImage(context, theRect, ref);
+        UIImage *img=UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        CGImageRef ref = nil;
+        
+        if (mapPath.x % 2 == 0 && mapPath.y % 2 == 1) {
+            CGRect rect = CGRectMake(0, 0, img.size.width / 2, img.size.height / 2);
+            ref = CGImageCreateWithImageInRect(img.CGImage, rect);
+        } else
+        if (mapPath.x % 2 == 0 && mapPath.y % 2 == 0) {
+            CGRect rect = CGRectMake(0, img.size.height / 2 + 1, img.size.width / 2, img.size.height / 2);
+            ref = CGImageCreateWithImageInRect(img.CGImage, rect);
+        } else
+        if (mapPath.x % 2 == 1 && mapPath.y % 2 == 1) {
+            CGRect rect = CGRectMake(img.size.width / 2 + 1, 0, img.size.width / 2, img.size.height / 2);
+            ref = CGImageCreateWithImageInRect(img.CGImage, rect);
+        } else
+        if (mapPath.x % 2 == 1 && mapPath.y % 2 == 0) {
+            CGRect rect = CGRectMake(img.size.width / 2 + 1, img.size.height / 2 + 1, img.size.width / 2, img.size.height / 2);
+            ref = CGImageCreateWithImageInRect(img.CGImage, rect);
+        }
+
+        CGContextAddRect(context, theRect);
+        CGContextDrawImage(context, theRect, ref);
+        
+        CGImageRelease(ref);
 }
 
 @end
