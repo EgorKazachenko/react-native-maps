@@ -41,13 +41,16 @@ CGFloat ANIM_INTERVAL = 0.015f;
 
 - (void)setTransparency:(double)transparency {
      _transparency = transparency;
+    if (self.renderer) {
+        self.renderer.alpha = _transparency;
+    }
 }
 
 - (void) createTileOverlayAndRendererIfPossible
 {
     self.tileOverlay = [[AIRMapLocalTileOverlay alloc] initWithURLTemplate:self.pathTemplate];
     self.tileOverlay.canReplaceMapContent = NO;
-    self.tileOverlay.tileSize = CGSizeMake(512.0f, 512.0f);
+    self.tileOverlay.tileSize = CGSizeMake(256.0f, 256.0f);
     self.renderer = [[AIRMapLocalTileOverlayRenderer alloc] initWithTileOverlay:self.tileOverlay];
     self.renderer.customPath = _pathTemplate;
     
