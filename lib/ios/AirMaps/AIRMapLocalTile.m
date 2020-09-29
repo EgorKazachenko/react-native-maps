@@ -11,9 +11,6 @@
 #import "AIRMapLocalTileOverlay.h"
 #import "AIRMapLocalTileOverlayRenderer.h"
 
-CGFloat ALPHA_STEP = 0.02f;
-CGFloat ANIM_INTERVAL = 0.015f;
-
 @implementation AIRMapLocalTile {
     BOOL _pathTemplateSet;
     double _transparency;
@@ -57,6 +54,10 @@ CGFloat ANIM_INTERVAL = 0.015f;
     if (self.transparency) {
         self.renderer.alpha = self.transparency;
     }
+}
+
+-(void)refresh {
+    self.renderer.alpha = _transparency;
 }
 
 #pragma mark MKOverlay implementation

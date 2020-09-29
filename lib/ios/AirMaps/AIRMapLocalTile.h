@@ -32,6 +32,8 @@
 @property (nonatomic, assign) BOOL active;
 @property double transparency;
 
+- (void)refresh;
+
 #pragma mark MKOverlay protocol
 
 @property(nonatomic, readonly) CLLocationCoordinate2D coordinate;
