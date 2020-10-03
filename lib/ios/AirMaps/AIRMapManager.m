@@ -845,10 +845,16 @@ RCT_EXPORT_METHOD(coordinateForPoint:(nonnull NSNumber *)reactTag
 {
     if ([view.annotation isKindOfClass:[AIRMapMarker class]]) {
         [(AIRMapMarker *)view.annotation showCalloutView];
-    } else if ([view.annotation isKindOfClass:[MKUserLocation class]] && mapView.userLocationAnnotationTitle != nil && view.annotation.title != mapView.userLocationAnnotationTitle) {
-        [(MKUserLocation*)view.annotation setTitle: mapView.userLocationAnnotationTitle];
     }
+    // else if ([view.annotation isKindOfClass:[MKUserLocation class]] && mapView.userLocationAnnotationTitle != nil && view.annotation.title != mapView.userLocationAnnotationTitle) {
+    //     [(MKUserLocation*)view.annotation setTitle: mapView.userLocationAnnotationTitle];
+    // }
+}
 
+-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    MKAnnotationView *av = [mapView viewForAnnotation:mapView.userLocation];
+    av.enabled = NO;  //disable touch on user location
 }
 
 - (void)mapView:(AIRMap *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
@@ -859,11 +865,16 @@ RCT_EXPORT_METHOD(coordinateForPoint:(nonnull NSNumber *)reactTag
 
 - (MKAnnotationView *)mapView:(__unused AIRMap *)mapView viewForAnnotation:(AIRMapMarker *)marker
 {
+    if ([marker isKindOfClass:[MKUserLocation class]])
+    {
+        return nil;
+    }
+
     if (![marker isKindOfClass:[AIRMapMarker class]]) {
-        if ([marker isKindOfClass:[MKUserLocation class]] && mapView.userLocationAnnotationTitle != nil) {
-            [(MKUserLocation*)marker setTitle: mapView.userLocationAnnotationTitle];
-            return nil;
-        }
+        // if ([marker isKindOfClass:[MKUserLocation class]] && mapView.userLocationAnnotationTitle != nil) {
+        //     [(MKUserLocation*)marker setTitle: mapView.userLocationAnnotationTitle];
+        //     return nil;
+        // }
         return nil;
     }
 
@@ -952,6 +963,9 @@ static int kDragCenterContext;
 
 - (void)mapView:(AIRMap *)mapView didUpdateUserLocation:(MKUserLocation *)location
 {
+    MKAnnotationView *userLocationView = [mapView viewForAnnotation:location];   
+    userLocationView.canShowCallout = NO;
+
     id event = @{@"coordinate": @{
                          @"latitude": @(location.coordinate.latitude),
                          @"longitude": @(location.coordinate.longitude),
